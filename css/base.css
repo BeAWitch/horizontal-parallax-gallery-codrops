@@ -26,7 +26,7 @@ body {
   .loading {
     &::before,
     &::after {
-      content: '';
+      content: "";
       position: fixed;
       z-index: 10000;
     }
@@ -110,11 +110,11 @@ a {
   justify-items: start;
   grid-template-columns: auto auto auto 1fr;
   grid-template-areas:
-    'title title title title'
-    'back archive github ...'
-    'demos demos demos demos'
-    'tags tags tags tags'
-    'sponsor sponsor sponsor sponsor';
+    "title title title title"
+    "back archive github ..."
+    "demos demos demos demos"
+    "tags tags tags tags"
+    "sponsor sponsor sponsor sponsor";
 
   #cdawrap {
     justify-self: start;
@@ -171,8 +171,8 @@ a {
     grid-template-rows: auto auto;
     align-content: space-between;
     grid-template-areas:
-      'title back github archive demos'
-      'tags tags tags sponsor sponsor';
+      "title back github archive demos"
+      "tags tags tags sponsor sponsor";
 
     .frame__tags {
       align-self: end;
@@ -192,6 +192,7 @@ a {
   display: flex;
   flex-direction: column;
   width: 100vw;
+  height: 100vh;
   position: relative;
 
   @media screen and (min-width: 53em) {

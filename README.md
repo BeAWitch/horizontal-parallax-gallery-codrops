@@ -1,15 +1,6 @@
-_How to use this template:_
+# Horizontal Parallax Gallery
 
-- Styles for the demo go in css/base.css
-- Add build instructions and credits to the README.md
-- For writing the tutorial, take a look at https://github.com/crnacura/CodropsTemplate/wiki/Writing-the-article
-- Delete this 'how to' intro in the final version and leave the following (fill in title/description, credits and social links of your likings, we'll do the rest):
-
----
-
-# Title of the demo
-
-_A description of the demo goes here._
+A horizontal parallax effect with images build with CSS and JavaScript. The demo also includes a WebGL version.
 
 ![Image Title](https://generative-placeholders.glitch.me/image?width=800&height=600")
 
@@ -27,7 +18,7 @@ Run this demo on a [local server](https://developer.mozilla.org/en-US/docs/Learn
 
 ## Misc
 
-Follow _Author_: [Twitter](), [Instagram](), [GitHub]() ...
+Follow David: [Website](https://davidfaure.eu/), [Studio](https://www.matterandform.eu/), [Linkedin](https://www.linkedin.com/in/david-faure/), [X](https://x.com/davidaswell), [Instagram](https://www.instagram.com/david.aswell/), [GitHub](https://github.com/davidfaure)
 
 Follow Codrops: [X](http://www.x.com/codrops), [Facebook](https://www.facebook.com/codrops), [Instagram](https://www.instagram.com/codropsss/), [LinkedIn](https://www.linkedin.com/company/codrops/), [GitHub](https://github.com/codrops)
 

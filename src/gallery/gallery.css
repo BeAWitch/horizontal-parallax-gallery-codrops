@@ -26,9 +26,8 @@
 .gallery__media__image {
   position: absolute;
   top: 0;
-  /* left: -12.5%;
-  width: 125%; */
-  width: 100%;
+  left: -12.5%;
+  width: 125%;
   height: 100%;
   object-fit: cover;
 }

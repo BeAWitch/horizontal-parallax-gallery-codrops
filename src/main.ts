@@ -11,11 +11,13 @@ interface Scroll {
 class App {
   container: HTMLElement | null;
   wrapper: HTMLElement | null;
+  images: NodeListOf<HTMLElement>;
   scroll: Scroll;
 
   constructor() {
     this.container = document.querySelector(".gallery__image__container");
     this.wrapper = document.querySelector(".gallery__wrapper");
+    this.images = document.querySelectorAll(".gallery__media__image");
     this.scroll = {
       current: 0,
       target: 0,
@@ -35,6 +37,18 @@ class App {
 
   onWheel(e: WheelEvent) {
     this.scroll.target += e.deltaY;
+  }
+
+  applyParallaxEffect() {
+    this.images.forEach((image) => {
+      const parent = image.parentElement as HTMLElement;
+      if (!parent) return;
+
+      let { left } = parent.getBoundingClientRect();
+      left -= window.innerWidth * 0.25;
+
+      image.style.transform = `translateX(${left * -0.025}%)`;
+    });
   }
 
   onResize() {
@@ -60,8 +74,10 @@ class App {
     );
 
     if (this.container) {
-      this.container.style.transform = `translateX(${-this.scroll.current}px)`;
+      this.container.style.transform = `translateX(${this.scroll.current < 0.01 ? 0 : -this.scroll.current}px)`;
     }
+
+    this.applyParallaxEffect();
 
     requestAnimationFrame(this.render.bind(this));
   }

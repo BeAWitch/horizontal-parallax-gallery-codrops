@@ -1,4 +1,5 @@
-import "./gallery/gallery.css";
+import { Gallery } from "./gallery";
+import { GL } from "./gallery/GL";
 import { clamp, lerp } from "./utils/math";
 
 interface Scroll {
@@ -13,11 +14,19 @@ class App {
   wrapper: HTMLElement | null;
   images: NodeListOf<HTMLElement>;
   scroll: Scroll;
+  gallery!: Gallery;
+  gl!: HTMLElement | null;
+  canvas!: GL | null;
 
   constructor() {
-    this.container = document.querySelector(".gallery__image__container");
-    this.wrapper = document.querySelector(".gallery__wrapper");
+    this.container =
+      document.querySelector(".gallery__image__container") ||
+      document.querySelector(".gallery__image__container__gl");
+    this.wrapper =
+      document.querySelector(".gallery__wrapper") ||
+      document.querySelector(".gallery__wrapper__gl");
     this.images = document.querySelectorAll(".gallery__media__image");
+    this.gl = document.getElementById("gl");
     this.scroll = {
       current: 0,
       target: 0,
@@ -25,9 +34,19 @@ class App {
       limit: 0,
     };
 
+    this.init();
     this.setLimit();
+    this.onResize();
     this.addEventListeners();
     this.render();
+  }
+
+  init() {
+    this.gallery = new Gallery();
+    console.log(this.gl, "gl element");
+    if (this.gl) {
+      this.canvas = new GL();
+    }
   }
 
   setLimit() {
@@ -39,26 +58,16 @@ class App {
     this.scroll.target += e.deltaY;
   }
 
-  applyParallaxEffect() {
-    this.images.forEach((image) => {
-      const parent = image.parentElement as HTMLElement;
-      if (!parent) return;
-
-      let { left } = parent.getBoundingClientRect();
-      left -= window.innerWidth * 0.25;
-
-      image.style.transform = `translateX(${left * -0.025}%)`;
-    });
-  }
-
   onResize() {
     this.setLimit();
+    this.canvas?.onResize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
   }
 
   addEventListeners() {
-    window.addEventListener("resize", this.onResize.bind(this), {
-      passive: true,
-    });
+    window.addEventListener("resize", this.onResize.bind(this));
     window.addEventListener("wheel", this.onWheel.bind(this), {
       passive: true,
     });
@@ -73,11 +82,8 @@ class App {
       this.scroll.ease,
     );
 
-    if (this.container) {
-      this.container.style.transform = `translateX(${this.scroll.current < 0.01 ? 0 : -this.scroll.current}px)`;
-    }
-
-    this.applyParallaxEffect();
+    this.gallery?.render(this.container!, this.scroll.current);
+    this.canvas?.render(this.scroll.current);
 
     requestAnimationFrame(this.render.bind(this));
   }

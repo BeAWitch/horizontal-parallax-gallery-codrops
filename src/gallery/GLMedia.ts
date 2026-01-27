@@ -1,0 +1,128 @@
+import * as THREE from "three";
+import vertex from "../shaders/mediaVertex.glsl";
+import fragment from "../shaders/mediaFragment.glsl";
+
+interface Props {
+  scene: THREE.Group;
+  element: HTMLElement;
+  viewport: { width: number; height: number };
+  camera: THREE.PerspectiveCamera;
+  geometry: THREE.PlaneGeometry;
+  renderer: THREE.WebGLRenderer;
+}
+
+export class GLMedia {
+  camera: THREE.PerspectiveCamera;
+  element: HTMLElement;
+  scene: THREE.Group;
+  geometry: THREE.PlaneGeometry;
+  renderer: THREE.WebGLRenderer;
+  material!: THREE.ShaderMaterial;
+  texture!: THREE.Texture;
+  viewport!: { width: number; height: number };
+  bounds!: DOMRect;
+  mesh!: THREE.Mesh;
+
+  constructor({ scene, element, viewport, camera, geometry, renderer }: Props) {
+    this.scene = scene;
+    this.element = element;
+    this.viewport = viewport;
+    this.camera = camera;
+    this.geometry = geometry;
+    this.renderer = renderer;
+
+    this.bounds = this.element.getBoundingClientRect();
+    this.createMesh();
+    this.createTexture();
+  }
+
+  createMesh() {
+    this.material = new THREE.ShaderMaterial({
+      uniforms: {
+        uTexture: { value: null },
+        uResolution: {
+          value: new THREE.Vector2(
+            this.bounds?.width || 1,
+            this.bounds?.height || 1,
+          ),
+        },
+        uImageResolution: { value: new THREE.Vector2(1, 1) },
+        uParallax: { value: 0 },
+      },
+      vertexShader: vertex,
+      fragmentShader: fragment,
+    });
+
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.scene.add(this.mesh);
+  }
+
+  createTexture() {
+    this.texture = new THREE.TextureLoader().load(
+      this.element.getAttribute("src") as string,
+      (text) => {
+        const material = this.mesh?.material as THREE.ShaderMaterial;
+        if (material?.uniforms?.uImageResolution) {
+          material.uniforms.uImageResolution.value.set(
+            text.image.width,
+            text.image.height,
+          );
+        }
+      },
+    );
+
+    this.material.uniforms.uTexture.value = this.texture;
+  }
+
+  updateScale() {
+    this.bounds = this.element.getBoundingClientRect();
+    this.mesh?.scale.set(this.bounds.width, this.bounds.height, 1);
+    this.material?.uniforms.uResolution.value.set(
+      this.bounds.width,
+      this.bounds.height,
+    );
+  }
+
+  updatePosition(scroll: number) {
+    const x =
+      this.bounds.left -
+      scroll -
+      this.viewport.width / 2 +
+      this.bounds.width / 2;
+    const y =
+      -this.bounds.top + this.viewport.height / 2 - this.bounds.height / 2;
+
+    this.mesh.position.set(x, y, 0);
+  }
+
+  updateParallax(scroll: number) {
+    if (!this.bounds) return;
+
+    const { innerWidth } = window;
+
+    const elementLeft = this.bounds.left - scroll;
+    const elementRight = elementLeft + this.bounds.width;
+
+    if (elementRight >= 0 && elementLeft <= innerWidth) {
+      // Calculate parallax value based on element position in viewport
+      // Range from -1 to 1 as element moves through viewport
+      const elementCenter = elementLeft + this.bounds.width / 2;
+      const viewportCenter = innerWidth / 2;
+      const distance = (elementCenter - viewportCenter) / innerWidth;
+
+      // UV parallax with stronger effect
+      const parallaxValue = distance * 0.4;
+      this.material.uniforms.uParallax.value = parallaxValue;
+    }
+  }
+
+  render(scroll: number) {
+    this.updateParallax(scroll);
+    this.updatePosition(scroll);
+  }
+
+  onResize(viewport: { width: number; height: number }) {
+    this.viewport = viewport;
+    this.updateScale();
+  }
+}

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="no-js">
   <head>
     <meta charset="UTF-8" />
@@ -7,37 +7,121 @@
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     <meta name="author" content="Codrops" />
-    <link rel="icon" type="image/svg+xml" href="https://tympanus.net/favicon/favicon.svg" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="https://tympanus.net/favicon/favicon.svg"
+    />
     <link rel="shortcut icon" href="https://tympanus.net/favicon/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <script>
-      document.documentElement.className = 'js';
+      document.documentElement.className = "js";
     </script>
     <!--script src="//tympanus.net/codrops/adpacks/analytics.js"></script-->
   </head>
 
-  <body class="demo-1">
+  <body class="demo-2" id="gl">
     <main>
       <header class="frame">
-        <h1 class="frame__title">The Title</h1>
-        <a class="frame__back" href="https://tympanus.net/codrops/?p=">Article</a>
-        <a class="frame__archive" href="https://tympanus.net/codrops/hub/">All demos</a>
+        <h1 class="frame__title">Horizontal Parallax Gallery Webgl</h1>
+        <a class="frame__back" href="https://tympanus.net/codrops/?p="
+          >Article</a
+        >
+        <a class="frame__archive" href="https://tympanus.net/codrops/hub/"
+          >All demos</a
+        >
         <a class="frame__github" href="https://github.com/codrops/">GitHub</a>
         <nav class="frame__tags">
           <a href="https://tympanus.net/codrops/demos/?tag=scroll">#scroll</a>
-          <a href="https://tympanus.net/codrops/demos/?tag=three-js">#three.js</a>
+          <a href="https://tympanus.net/codrops/demos/?tag=three-js"
+            >#three.js</a
+          >
           <a href="https://tympanus.net/codrops/demos/?tag=webgl">#webgl</a>
         </nav>
         <nav class="frame__demos">
-          <span>Variation 1</span>
-          <a href="index2.html">Variation 2</a>
-          <a href="index3.html">Variation 3</a>
+          <a href="index1.html">Variation 1</a>
+          <span>Variation 2</span>
         </nav>
       </header>
       <div class="content">
-        <h2>The Content</h2>
+        <div class="gallery__wrapper__gl">
+          <div class="gallery__image__container__gl">
+            <picture class="gallery__media__gl">
+              <img
+                src="1.webp"
+                alt="Image 1"
+                class="gallery__media__image__gl"
+                draggable="false"
+              />
+            </picture>
+            <picture class="gallery__media__gl">
+              <img
+                src="2.webp"
+                alt="image_2"
+                class="gallery__media__image__gl"
+                draggable="false"
+            /></picture>
+            <picture class="gallery__media__gl">
+              <img
+                src="3.webp"
+                alt="image_3"
+                class="gallery__media__image__gl"
+                draggable="false"
+            /></picture>
+            <picture class="gallery__media__gl">
+              <img
+                src="4.webp"
+                alt="image_4"
+                class="gallery__media__image__gl"
+                draggable="false"
+            /></picture>
+            <picture class="gallery__media__gl">
+              <img
+                src="5.webp"
+                alt="image_5"
+                class="gallery__media__image__gl"
+                draggable="false"
+            /></picture>
+            <picture class="gallery__media__gl">
+              <img
+                src="6.webp"
+                alt="image_6"
+                class="gallery__media__image__gl"
+                draggable="false"
+            /></picture>
+            <picture class="gallery__media__gl">
+              <img
+                src="7.webp"
+                alt="image_7"
+                class="gallery__media__image__gl"
+                draggable="false"
+            /></picture>
+            <picture class="gallery__media__gl">
+              <img
+                src="8.webp"
+                alt="image_8"
+                class="gallery__media__image__gl"
+                draggable="false"
+            /></picture>
+            <picture class="gallery__media__gl">
+              <img
+                src="9.webp"
+                alt="image_9"
+                class="gallery__media__image__gl"
+                draggable="false"
+            /></picture>
+            <picture class="gallery__media__gl">
+              <img
+                src="10.webp"
+                alt="image_1"
+                class="gallery__media__image__gl"
+                draggable="false"
+            /></picture>
+          </div>
+        </div>
       </div>
     </main>
+    <script type="module" src="/src/main.ts"></script>
     <!--script src="https://tympanus.net/codrops/adpacks/cda_sponsor.js"></script-->
   </body>
 </html>

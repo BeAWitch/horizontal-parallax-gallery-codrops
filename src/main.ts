@@ -34,16 +34,31 @@ class App {
       limit: 0,
     };
 
-    this.init();
-    this.setLimit();
-    this.onResize();
-    this.addEventListeners();
-    this.render();
+    this.preloadImages().then(() => {
+      document.body.classList.remove("loading");
+      this.init();
+      this.setLimit();
+      this.onResize();
+      this.addEventListeners();
+      this.render();
+    });
+  }
+
+  preloadImages(): Promise<void[]> {
+    const images = Array.from(document.querySelectorAll("img"));
+    const promises = images.map((img) => {
+      return new Promise<void>((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve();
+        image.onerror = () => resolve();
+        image.src = img.src;
+      });
+    });
+    return Promise.all(promises);
   }
 
   init() {
     this.gallery = new Gallery();
-    console.log(this.gl, "gl element");
     if (this.gl) {
       this.canvas = new GL();
     }

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GLMedia } from "./GLMedia";
+import GUI from "lil-gui";
 
 export interface Sizes {
   width: number;
@@ -18,6 +19,12 @@ export class GL {
   };
   medias!: HTMLElement[];
   allMedias!: GLMedia[];
+  gui!: GUI;
+  params = {
+    parallaxIntensity: 0.4,
+    uvScale: 0.85,
+    shaderMultiplier: 1.0,
+  };
 
   constructor() {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -40,6 +47,7 @@ export class GL {
     );
     this.createGeometry();
     this.createGallery();
+    this.setupGUI();
   }
 
   createGeometry() {
@@ -58,6 +66,37 @@ export class GL {
     });
 
     this.scene.add(this.group);
+  }
+
+  setupGUI() {
+    this.gui = new GUI();
+
+    this.gui
+      .add(this.params, "parallaxIntensity", 0, 1, 0.01)
+      .name("Parallax Intensity")
+      .onChange((value: number) => {
+        this.allMedias.forEach((media) => {
+          media.parallaxIntensity = value;
+        });
+      });
+
+    this.gui
+      .add(this.params, "uvScale", 0.7, 1.0, 0.01)
+      .name("UV Scale (Buffer)")
+      .onChange((value: number) => {
+        this.allMedias.forEach((media) => {
+          media.material.uniforms.uUvScale.value = value;
+        });
+      });
+
+    this.gui
+      .add(this.params, "shaderMultiplier", 0, 2, 0.1)
+      .name("Shader Multiplier")
+      .onChange((value: number) => {
+        this.allMedias.forEach((media) => {
+          media.material.uniforms.uShaderMultiplier.value = value;
+        });
+      });
   }
 
   onResize(

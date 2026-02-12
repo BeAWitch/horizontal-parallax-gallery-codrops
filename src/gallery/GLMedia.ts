@@ -22,6 +22,7 @@ export class GLMedia {
   viewport!: { width: number; height: number };
   bounds!: DOMRect;
   mesh!: THREE.Mesh;
+  parallaxIntensity: number;
 
   constructor({ scene, element, viewport, camera, geometry, renderer }: Props) {
     this.scene = scene;
@@ -31,6 +32,7 @@ export class GLMedia {
     this.geometry = geometry;
     this.renderer = renderer;
 
+    this.parallaxIntensity = 0.4;
     this.bounds = this.element.getBoundingClientRect();
     this.createMesh();
     this.createTexture();
@@ -48,6 +50,8 @@ export class GLMedia {
         },
         uImageResolution: { value: new THREE.Vector2(1, 1) },
         uParallax: { value: 0 },
+        uUvScale: { value: 0.85 },
+        uShaderMultiplier: { value: 1.0 },
       },
       vertexShader: vertex,
       fragmentShader: fragment,
@@ -111,7 +115,7 @@ export class GLMedia {
       const distance = (elementCenter - viewportCenter) / innerWidth;
 
       // UV parallax with stronger effect
-      const parallaxValue = distance * 0.4;
+      const parallaxValue = distance * this.parallaxIntensity;
       this.material.uniforms.uParallax.value = parallaxValue;
     }
   }

@@ -6,6 +6,8 @@ uniform sampler2D uTexture;
 uniform vec2 uResolution;
 uniform vec2 uImageResolution;
 uniform float uParallax;
+uniform float uUvScale;
+uniform float uShaderMultiplier;
 
 vec2 coverUv(vec2 uv, vec2 resolution, vec2 imageResolution) {
   vec2 ratio = vec2(
@@ -24,12 +26,12 @@ void main() {
   vec2 uv = coverUv(vUv, uResolution, uImageResolution);
 
   // Apply parallax effect (horizontal instead of vertical)
-  uv.x += uParallax * 1.0; // Increased multiplier from 0.5 to 1.0 for stronger effect
+  uv.x += uParallax * uShaderMultiplier; // Increased multiplier from 0.5 to 1.0 for stronger effect
 
   // Scale UV to create "parent container" effect
   // This makes the texture slightly smaller, creating space for parallax movement
   uv -= 0.5;
-  uv *= 0.85; // Increased from 0.92 to allow more parallax movement
+  uv *= uUvScale; // Increased from 0.92 to allow more parallax movement
   uv += 0.5;
 
   vec3 col = texture2D(uTexture, uv).rgb;

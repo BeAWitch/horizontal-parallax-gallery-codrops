@@ -2,7 +2,7 @@
 
 A horizontal parallax effect with images build with CSS and JavaScript. The demo also includes a WebGL version.
 
-![Image Title](https://generative-placeholders.glitch.me/image?width=800&height=600")
+![Image Title](https://github.com/davidfaure/horizontal-parallax-gallery-codrops/blob/master/public/thumbnail.gif)
 
 [Article on Codrops](https://tympanus.net/codrops/?p=)
 

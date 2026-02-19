@@ -20,13 +20,16 @@ body {
   font-family: ui-monospace, monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 @media (scripting: enabled) {
   .loading {
     &::before,
     &::after {
-      content: "";
+      content: '';
       position: fixed;
       z-index: 10000;
     }
@@ -104,17 +107,17 @@ a {
   display: grid;
   z-index: 1000;
   position: relative;
-  grid-row-gap: 1rem;
+  grid-row-gap: 2rem;
   grid-column-gap: 2rem;
   pointer-events: none;
   justify-items: start;
   grid-template-columns: auto auto auto 1fr;
   grid-template-areas:
-    "title title title title"
-    "back archive github ..."
-    "demos demos demos demos"
-    "tags tags tags tags"
-    "sponsor sponsor sponsor sponsor";
+    'title title title title'
+    'back archive github ...'
+    'demos demos demos demos'
+    'tags tags tags tags'
+    'sponsor sponsor sponsor sponsor';
 
   #cdawrap {
     justify-self: start;
@@ -168,23 +171,37 @@ a {
     left: 0;
     width: 100%;
     grid-template-columns: auto auto auto auto 1fr;
-    grid-template-rows: auto auto;
-    align-content: space-between;
+    grid-template-rows: auto auto 1fr;
+    align-content: start;
     grid-template-areas:
-      "title back github archive demos"
-      "tags tags tags sponsor sponsor";
+      'title back github archive ...'
+      'demos demos demos ... ...'
+      'tags tags tags sponsor sponsor';
 
     .frame__tags {
       align-self: end;
     }
 
-    .frame__demos,
     #cdawrap {
       justify-self: end;
+      align-self: end;
       text-align: right;
       max-width: 300px;
     }
   }
+}
+
+.button {
+  border: 1px solid #4c4c4c;
+  padding: 0.5rem 1rem;
+  border-radius: 2em;
+}
+
+a.button:hover,
+a.button:focus {
+  border-color: #5c5c5c;
+  text-decoration: none;
+  color: #fff;
 }
 
 .content {

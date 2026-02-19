@@ -4,13 +4,16 @@ A horizontal parallax effect with images build with CSS and JavaScript. The demo
 
 ![Image Title](https://github.com/davidfaure/horizontal-parallax-gallery-codrops/blob/master/public/thumbnail.gif)
 
-[Article on Codrops](https://tympanus.net/codrops/?p=)
+[Article on Codrops](https://tympanus.net/codrops/?p=108925)
 
-[Demo](https://tympanus.net/Tutorials/.../)
+[Demo](https://tympanus.net/Tutorials/HorizontalParallaxGallery/)
 
 ## Installation
 
-Run this demo on a [local server](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Tools_and_setup/set_up_a_local_testing_server).
+```bash
+npm install
+npm run dev
+```
 
 ## Credits
 

@@ -76,6 +76,11 @@ class App {
       this.canvas.destroy();
       this.canvas = null;
     }
+    
+    // Cleanup old Gallery 2D instance GUI
+    if (this.gallery) {
+      this.gallery.destroy();
+    }
 
     // Revoke old blob URLs
     this.objectUrls.forEach(url => URL.revokeObjectURL(url));

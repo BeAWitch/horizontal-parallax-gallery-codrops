@@ -16,11 +16,40 @@ export class SettingsUI {
   dropdown!: HTMLElement;
   isWebGL: boolean;
   private isOpen: boolean = false;
+  private settingsKey: string = '';
+  private sliders: SliderConfig[] = [];
 
   constructor(isWebGL: boolean, sliders: SliderConfig[]) {
     this.isWebGL = isWebGL;
+    this.settingsKey = isWebGL ? 'webgl_settings' : 'dom_settings';
+    this.sliders = sliders;
+    this.loadAllSettings();
     this.createDOM(sliders);
     this.addListeners();
+  }
+
+  loadAllSettings() {
+    const savedSettings = localStorage.getItem(this.settingsKey);
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings);
+        this.sliders.forEach(slider => {
+          if (settings[slider.id] !== undefined) {
+            slider.value = settings[slider.id];
+          }
+        });
+      } catch (e) {
+        console.error('Failed to load settings:', e);
+      }
+    }
+  }
+
+  saveAllSettings() {
+    const settings: { [key: string]: number } = {};
+    this.sliders.forEach(slider => {
+      settings[slider.id] = slider.value;
+    });
+    localStorage.setItem(this.settingsKey, JSON.stringify(settings));
   }
 
   createDOM(sliders: SliderConfig[]) {
@@ -67,9 +96,15 @@ export class SettingsUI {
     sliders.forEach(s => {
       const input = document.getElementById(s.id) as HTMLInputElement;
       const valDisplay = document.getElementById(`${s.id}-val`)!;
+      
+      input.value = s.value.toString();
+      valDisplay.textContent = s.value.toString();
+      s.onChange(s.value);
+      
       input.addEventListener('input', (e) => {
         const val = parseFloat((e.target as HTMLInputElement).value);
         valDisplay.textContent = val.toString();
+        s.value = val;
         s.onChange(val);
       });
     });
@@ -83,6 +118,7 @@ export class SettingsUI {
 
     document.addEventListener('click', (e) => {
       if (this.isOpen && !this.container.contains(e.target as Node)) {
+        this.saveAllSettings();
         this.closeDropdown();
       }
     });

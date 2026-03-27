@@ -18,7 +18,8 @@ export class GLMedia {
   geometry: THREE.PlaneGeometry;
   renderer: THREE.WebGLRenderer;
   material!: THREE.ShaderMaterial;
-  texture!: THREE.Texture;
+  texture: THREE.Texture | null = null;
+  textureState: 'unloaded' | 'loading' | 'loaded' = 'unloaded';
   viewport!: { width: number; height: number };
   bounds!: DOMRect;
   mesh!: THREE.Mesh;
@@ -35,7 +36,6 @@ export class GLMedia {
     this.parallaxIntensity = 0.4;
     this.bounds = this.element.getBoundingClientRect();
     this.createMesh();
-    this.createTexture();
   }
 
   createMesh() {
@@ -61,10 +61,14 @@ export class GLMedia {
     this.scene.add(this.mesh);
   }
 
-  createTexture() {
+  loadTexture() {
+    if (this.textureState !== 'unloaded') return;
+    this.textureState = 'loading';
+
     this.texture = new THREE.TextureLoader().load(
       this.element.getAttribute("src") as string,
       (text) => {
+        this.textureState = 'loaded';
         const material = this.mesh?.material as THREE.ShaderMaterial;
         if (material?.uniforms?.uImageResolution) {
           material.uniforms.uImageResolution.value.set(
@@ -73,9 +77,26 @@ export class GLMedia {
           );
         }
       },
+      undefined,
+      () => {
+        this.textureState = 'unloaded'; // Reset on error
+      }
     );
 
     this.material.uniforms.uTexture.value = this.texture;
+  }
+
+  unloadTexture() {
+    if (this.textureState === 'unloaded') return;
+    
+    if (this.texture) {
+      this.texture.dispose();
+    }
+    this.texture = null;
+    if (this.material?.uniforms?.uTexture) {
+      this.material.uniforms.uTexture.value = null;
+    }
+    this.textureState = 'unloaded';
   }
 
   updateScale() {
@@ -120,7 +141,26 @@ export class GLMedia {
     }
   }
 
+  checkVisibility(scroll: number) {
+    if (!this.bounds) return;
+
+    const { innerWidth } = window;
+    const elementLeft = this.bounds.left - scroll;
+    const elementRight = elementLeft + this.bounds.width;
+    
+    // Load textures for images that are within 1.5 screen widths of the viewport
+    const threshold = innerWidth * 1.5;
+    const inView = elementRight >= -threshold && elementLeft <= innerWidth + threshold;
+
+    if (inView && this.textureState === 'unloaded') {
+      this.loadTexture();
+    } else if (!inView && (this.textureState === 'loaded' || this.textureState === 'loading')) {
+      this.unloadTexture();
+    }
+  }
+
   render(scroll: number) {
+    this.checkVisibility(scroll);
     this.updateParallax(scroll);
     this.updatePosition(scroll);
   }
@@ -128,5 +168,17 @@ export class GLMedia {
   onResize(viewport: { width: number; height: number }) {
     this.viewport = viewport;
     this.updateScale();
+  }
+
+  destroy() {
+    if (this.mesh) {
+      this.scene.remove(this.mesh);
+    }
+    if (this.material) {
+      this.material.dispose();
+    }
+    if (this.texture) {
+      this.texture.dispose();
+    }
   }
 }

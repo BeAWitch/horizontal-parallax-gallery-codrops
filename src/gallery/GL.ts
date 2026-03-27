@@ -27,7 +27,7 @@ export class GL {
   };
 
   constructor() {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     document.body.appendChild(this.renderer.domElement);
 
@@ -122,5 +122,25 @@ export class GL {
       media.render(scroll);
     });
     this.renderer.render(this.scene, this.camera);
+  }
+
+  destroy() {
+    this.allMedias.forEach((media) => media.destroy());
+    this.allMedias = [];
+    
+    if (this.geometry) {
+      this.geometry.dispose();
+    }
+    
+    this.scene.remove(this.group);
+    
+    if (this.gui) {
+      this.gui.destroy();
+    }
+    
+    this.renderer.dispose();
+    if (this.renderer.domElement && this.renderer.domElement.parentNode) {
+      this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+    }
   }
 }

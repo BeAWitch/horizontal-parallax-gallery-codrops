@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLMedia } from "./GLMedia";
-import GUI from "lil-gui";
+import { SettingsUI } from '../ui/SettingsUI';
+import type { SliderConfig } from '../ui/SettingsUI';
 
 export interface Sizes {
   width: number;
@@ -19,7 +20,7 @@ export class GL {
   };
   medias!: HTMLElement[];
   allMedias!: GLMedia[];
-  gui!: GUI;
+  gui!: SettingsUI;
   params = {
     parallaxIntensity: 0.4,
     uvScale: 0.85,
@@ -69,34 +70,58 @@ export class GL {
   }
 
   setupGUI() {
-    this.gui = new GUI();
-
-    this.gui
-      .add(this.params, "parallaxIntensity", 0, 1, 0.01)
-      .name("Parallax Intensity")
-      .onChange((value: number) => {
-        this.allMedias.forEach((media) => {
-          media.parallaxIntensity = value;
-        });
-      });
-
-    this.gui
-      .add(this.params, "uvScale", 0.7, 1.0, 0.01)
-      .name("UV Scale (Buffer)")
-      .onChange((value: number) => {
-        this.allMedias.forEach((media) => {
-          media.material.uniforms.uUvScale.value = value;
-        });
-      });
-
-    this.gui
-      .add(this.params, "shaderMultiplier", 0, 2, 0.1)
-      .name("Shader Multiplier")
-      .onChange((value: number) => {
-        this.allMedias.forEach((media) => {
-          media.material.uniforms.uShaderMultiplier.value = value;
-        });
-      });
+    const isWebGL = true;
+    
+    const sliders: SliderConfig[] = [
+      {
+        id: 'parallax-intensity',
+        name: 'Parallax Intensity',
+        min: 0,
+        max: 1,
+        step: 0.01,
+        value: this.params.parallaxIntensity,
+        onChange: (value: number) => {
+          this.params.parallaxIntensity = value;
+          this.allMedias.forEach((media) => {
+            media.parallaxIntensity = value;
+          });
+        }
+      },
+      {
+        id: 'uv-scale',
+        name: 'UV Scale',
+        min: 0.7,
+        max: 1.0,
+        step: 0.01,
+        value: this.params.uvScale,
+        onChange: (value: number) => {
+          this.params.uvScale = value;
+          this.allMedias.forEach((media) => {
+            if (media.material && media.material.uniforms) {
+              media.material.uniforms.uUvScale.value = value;
+            }
+          });
+        }
+      },
+      {
+        id: 'shader-multiplier',
+        name: 'Shader Multiplier',
+        min: 0,
+        max: 2,
+        step: 0.1,
+        value: this.params.shaderMultiplier,
+        onChange: (value: number) => {
+          this.params.shaderMultiplier = value;
+          this.allMedias.forEach((media) => {
+            if (media.material && media.material.uniforms) {
+              media.material.uniforms.uShaderMultiplier.value = value;
+            }
+          });
+        }
+      }
+    ];
+    
+    this.gui = new SettingsUI(isWebGL, sliders);
   }
 
   onResize(

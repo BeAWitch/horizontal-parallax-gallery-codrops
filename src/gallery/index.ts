@@ -1,11 +1,12 @@
 import './gallery.css';
-import GUI from "lil-gui";
+import { SettingsUI } from '../ui/SettingsUI';
+import type { SliderConfig } from '../ui/SettingsUI';
 
 export class Gallery {
   container: HTMLElement | null;
   wrapper: HTMLElement | null;
   images: NodeListOf<HTMLElement>;
-  gui!: GUI;
+  gui!: SettingsUI;
   params = {
     parallaxIntensity: 10,
     imageScale: 1.25,
@@ -24,18 +25,35 @@ export class Gallery {
   }
 
   setupGUI() {
-    this.gui = new GUI({ title: '2D/DOM Parallax Settings' });
-
-    this.gui
-      .add(this.params, "parallaxIntensity", 0, 30, 0.1)
-      .name("Parallax Intensity");
-
-    this.gui
-      .add(this.params, "imageScale", 1.0, 1.6, 0.01)
-      .name("Image Overflow Scale")
-      .onChange((value: number) => {
-        this.updateImageScale(value);
-      });
+    const isWebGL = false;
+    
+    const sliders: SliderConfig[] = [
+      {
+        id: 'parallax-intensity',
+        name: 'Parallax Intensity',
+        min: 0,
+        max: 30,
+        step: 0.1,
+        value: this.params.parallaxIntensity,
+        onChange: (value: number) => {
+          this.params.parallaxIntensity = value;
+        }
+      },
+      {
+        id: 'image-scale',
+        name: 'Overflow Scale',
+        min: 1.0,
+        max: 1.6,
+        step: 0.01,
+        value: this.params.imageScale,
+        onChange: (value: number) => {
+          this.params.imageScale = value;
+          this.updateImageScale(value);
+        }
+      }
+    ];
+    
+    this.gui = new SettingsUI(isWebGL, sliders);
   }
 
   updateImageScale(scale: number) {

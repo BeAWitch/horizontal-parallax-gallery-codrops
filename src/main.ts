@@ -36,6 +36,29 @@ class App {
       limit: 0,
     };
 
+    this.initDemoImages();
+  }
+
+  initDemoImages() {
+    const isGL = !!this.gl;
+    const mediaClass = isGL ? 'gallery__media__gl' : 'gallery__media';
+    const imageClass = isGL ? 'gallery__media__image__gl' : 'gallery__media__image';
+    let html = '';
+
+    // Load 1 to 10 from demo folder
+    for (let i = 1; i <= 10; i++) {
+      html += `
+        <picture class="${mediaClass}">
+          <img src="demo/${i}.webp" alt="Image ${i}" class="${imageClass}" draggable="false" loading="lazy" />
+        </picture>
+      `;
+    }
+
+    if (this.container) {
+      this.container.innerHTML = html;
+    }
+    this.images = document.querySelectorAll(`.${imageClass}`) as NodeListOf<HTMLElement>;
+
     this.preloadImages().then(() => {
       document.body.classList.remove("loading");
       this.init();
